@@ -32,7 +32,12 @@ void UMultiplayerSessionsSubsystem::CreateSession()
 	SessionInterface->AddOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegate);
 	
 	TSharedPtr<FOnlineSessionSettings> SessionSettings = MakeShareable(new FOnlineSessionSettings());
-	
+	SessionSettings->bIsLANMatch = false;
+	SessionSettings->NumPublicConnections = 10;
+	SessionSettings->bShouldAdvertise = true;
+	SessionSettings->bAllowJoinInProgress = true;
+	SessionSettings->bAllowJoinViaPresence = true;
+	SessionSettings->bUsesPresence = true;
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *SessionSettings);
 }
