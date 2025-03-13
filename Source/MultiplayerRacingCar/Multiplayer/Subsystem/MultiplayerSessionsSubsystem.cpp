@@ -10,7 +10,8 @@
 
 UMultiplayerSessionsSubsystem::UMultiplayerSessionsSubsystem():
 	OnCreateSessionCompleteDelegate(FOnCreateSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnCreateSessionComplete)),
-	OnFindSessionsCompleteDelegate(FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::OnFindSessionsComplete))
+	OnFindSessionsCompleteDelegate(FOnFindSessionsCompleteDelegate::CreateUObject(this, &ThisClass::OnFindSessionsComplete)),
+	OnJoinSessionCompleteDelegate(FOnJoinSessionCompleteDelegate::CreateUObject(this, &ThisClass::OnJoinSessionComplete))
 {
 	OnlineSubsystem = IOnlineSubsystem::Get();
 	if (OnlineSubsystem)
@@ -41,6 +42,7 @@ void UMultiplayerSessionsSubsystem::CreateSession()
 	SessionSettings->bAllowJoinViaPresence = true;
 	SessionSettings->bUsesPresence = true;
 	SessionSettings->bUseLobbiesIfAvailable = true;
+	SessionSettings->Set(FName("MatchType"), FString("ProMultiplayerGame"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *SessionSettings);
 }
@@ -74,16 +76,39 @@ void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, b
 
 void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 {
+	if (!SessionInterface.IsValid()) return;
 	if (bWasSuccessful)
 	{
 		for (auto Result : SessionSearchSettings->SearchResults)
 		{
-			FString Id = Result.GetSessionIdStr();
-			FString User = Result.Session.OwningUserName;
-			if (GEngine)
+			FString MatchType;
+			Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
+			if (MatchType == FString("ProMultiplayerGame"))
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Purple, FString::Printf(TEXT("Id: %s, User Name: %s"), *Id, *User));
+				Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
+				Result.Session.SessionSettings.bUsesPresence = true;
+				SessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
+				const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+				SessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result);
 			}
 		}
+	}
+}
+
+void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
+{
+	if (!SessionInterface.IsValid()) return;
+
+	FString MatchAddress;
+	SessionInterface->GetResolvedConnectString(NAME_GameSession, MatchAddress);
+
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Green, FString::Printf(TEXT("Match Address: %s"), *MatchAddress));
+	}
+	
+	if (APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController())
+	{
+		PlayerController->ClientTravel(MatchAddress, ETravelType::TRAVEL_Absolute);
 	}
 }
