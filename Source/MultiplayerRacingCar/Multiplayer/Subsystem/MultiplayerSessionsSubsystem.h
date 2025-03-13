@@ -25,16 +25,22 @@ public:
 protected:
 	UFUNCTION(BlueprintCallable, Category = "Multiplayer")
 	void CreateSession();
+
+	UFUNCTION(BlueprintCallable, Category = "Multiplayer")
+	void JoinSession();
 	
 	/// Delegate Callback functions
 	void OnCreateSessionComplete(FName SessionName, bool bWasSuccessful);
+	void OnFindSessionsComplete(bool bWasSuccessful);
 	
 private:
 	/// Multiplayer Subsystem Variables
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineSessionPtr SessionInterface;
+	TSharedPtr<FOnlineSessionSearch> SessionSearchSettings;
 
 	/// Multiplayer Delegates
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
 	
 };
