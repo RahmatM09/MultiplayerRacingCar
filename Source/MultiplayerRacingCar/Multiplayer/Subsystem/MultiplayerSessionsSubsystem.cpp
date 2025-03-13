@@ -64,18 +64,12 @@ void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, b
 {
 	if (bWasSuccessful)
 	{
-		if (GEngine)
+		if (UWorld* World = GetWorld())
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Green, TEXT("On Create Session Completed!"));
+			World->ServerTravel("/Game/Maps/Lobby?listen");
 		}
 	}
-	else
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Red, TEXT("On Create Session Not Successful!"));
-		}
-	}
+	
 }
 
 void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
