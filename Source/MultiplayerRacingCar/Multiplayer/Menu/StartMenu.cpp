@@ -3,6 +3,9 @@
 
 #include "StartMenu.h"
 
+#include "Components/Button.h"
+#include "MultiplayerRacingCar/Multiplayer/Subsystem/MultiplayerSessionsSubsystem.h"
+
 void UStartMenu::StartMenu()
 {
 	AddToViewport();
@@ -20,4 +23,35 @@ void UStartMenu::StartMenu()
 			PlayerController->SetShowMouseCursor(true);
 		}
 	}
+
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		SessionsSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>();
+	}
+	
+}
+
+bool UStartMenu::Initialize()
+{
+	if (!Super::Initialize())
+		return false;
+
+	if (StartGame)
+		StartGame->OnClicked.AddDynamic(this, &UStartMenu::StartGameClicked);
+	if (JoinGame)
+		JoinGame->OnClicked.AddDynamic(this, &UStartMenu::JoinGameClicked);
+
+	return true;
+}
+
+void UStartMenu::StartGameClicked()
+{
+	if (SessionsSubsystem)
+		SessionsSubsystem->CreateSession();
+}
+
+void UStartMenu::JoinGameClicked()
+{
+	if (SessionsSubsystem)
+		SessionsSubsystem->JoinSession();
 }
