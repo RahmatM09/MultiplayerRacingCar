@@ -47,6 +47,7 @@ void UMultiplayerSessionsSubsystem::CreateSession()
 	if (!SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *SessionSettings))
 	{
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegateHandle);
+		MultiplayerCreateSessionCompleteDelegate.Broadcast(false);
 	}
 }
 
@@ -71,8 +72,10 @@ void UMultiplayerSessionsSubsystem::JoinSession()
 void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, bool bWasSuccessful)
 {
 	if (SessionInterface.IsValid())
+	{
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegateHandle);
-
+	}
+	MultiplayerCreateSessionCompleteDelegate.Broadcast(bWasSuccessful);
 	if (bWasSuccessful)
 	{
 		if (UWorld* World = GetWorld())

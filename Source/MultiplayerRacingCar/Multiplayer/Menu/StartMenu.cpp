@@ -27,6 +27,10 @@ void UStartMenu::StartMenu()
 	if (UGameInstance* GameInstance = GetGameInstance())
 	{
 		SessionsSubsystem = GameInstance->GetSubsystem<UMultiplayerSessionsSubsystem>();
+		if (SessionsSubsystem)
+		{
+			SessionsSubsystem->MultiplayerCreateSessionCompleteDelegate.AddDynamic(this, &UStartMenu::OnMultiplayerCreateSession);
+		}
 	}
 	
 }
@@ -54,4 +58,12 @@ void UStartMenu::JoinGameClicked()
 {
 	if (SessionsSubsystem)
 		SessionsSubsystem->JoinSession();
+}
+
+void UStartMenu::OnMultiplayerCreateSession(bool bWasSuccessful)
+{
+	if (GEngine)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Red, TEXT("Multiplayer Session Created"));
+	}
 }

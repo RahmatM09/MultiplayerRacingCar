@@ -6,7 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "StartMenu.generated.h"
 
-/// forward delcare
+/// forward declare
 class UButton;
 class UMultiplayerSessionsSubsystem;
 /**
@@ -39,5 +39,9 @@ private:
 
 	UFUNCTION()
 	void JoinGameClicked();
+
+	/// Delegate Callback functions
+	UFUNCTION()
+	void OnMultiplayerCreateSession(bool bWasSuccessful);
 	
 };

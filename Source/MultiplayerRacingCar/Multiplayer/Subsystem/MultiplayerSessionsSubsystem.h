@@ -10,6 +10,8 @@
 /// Forward Declaration
 class IOnlineSubsystem;
 
+/// Our Delegates
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerCreateSessionCompleteDelegate, bool, bWasSuccessful);
 
 /**
  * 
@@ -27,6 +29,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Multiplayer")
 	void JoinSession();
+
+	/// Our Delegate
+	FMultiplayerCreateSessionCompleteDelegate MultiplayerCreateSessionCompleteDelegate;
 
 protected:
 	/// Delegate Callback functions
