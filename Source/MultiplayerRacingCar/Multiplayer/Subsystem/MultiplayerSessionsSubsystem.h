@@ -42,7 +42,10 @@ private:
 
 	/// Multiplayer Delegates
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
+	FDelegateHandle OnCreateSessionCompleteDelegateHandle;
 	FOnFindSessionsCompleteDelegate OnFindSessionsCompleteDelegate;
+	FDelegateHandle OnFindSessionsCompleteDelegateHandle;
 	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
+	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
 	
 };

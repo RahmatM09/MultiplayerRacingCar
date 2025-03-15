@@ -39,4 +39,5 @@ private:
 
 	UFUNCTION()
 	void JoinGameClicked();
+	
 };
