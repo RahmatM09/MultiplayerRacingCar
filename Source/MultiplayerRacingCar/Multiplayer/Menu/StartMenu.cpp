@@ -60,10 +60,28 @@ void UStartMenu::JoinGameClicked()
 		SessionsSubsystem->JoinSession();
 }
 
+void UStartMenu::RemoveMenu()
+{
+	RemoveFromParent();
+	if (UWorld* World = GetWorld())
+	{
+		if (APlayerController* PlayerController = World->GetFirstPlayerController())
+		{
+			FInputModeGameOnly InputMode;
+			PlayerController->SetInputMode(InputMode);
+			PlayerController->SetShowMouseCursor(false);
+		}
+	}
+}
+
 void UStartMenu::OnMultiplayerCreateSession(bool bWasSuccessful)
 {
-	if (GEngine)
+	if (bWasSuccessful)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Red, TEXT("Multiplayer Session Created"));
+		if (UWorld* World = GetWorld())
+		{
+			World->ServerTravel(MapLocation);
+			RemoveMenu();
+		}
 	}
 }

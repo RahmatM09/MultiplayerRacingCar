@@ -31,6 +31,8 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> JoinGame;
 
+	FString MapLocation = {TEXT("/Game/Maps/Lobby?listen")};
+
 	UPROPERTY()
 	TObjectPtr<UMultiplayerSessionsSubsystem> SessionsSubsystem;
 
@@ -39,6 +41,8 @@ private:
 
 	UFUNCTION()
 	void JoinGameClicked();
+
+	void RemoveMenu();
 
 	/// Delegate Callback functions
 	UFUNCTION()

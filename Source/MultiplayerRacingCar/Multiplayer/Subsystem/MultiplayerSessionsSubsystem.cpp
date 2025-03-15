@@ -76,13 +76,6 @@ void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, b
 		SessionInterface->ClearOnCreateSessionCompleteDelegate_Handle(OnCreateSessionCompleteDelegateHandle);
 	}
 	MultiplayerCreateSessionCompleteDelegate.Broadcast(bWasSuccessful);
-	if (bWasSuccessful)
-	{
-		if (UWorld* World = GetWorld())
-		{
-			World->ServerTravel("/Game/Maps/Lobby?listen");
-		}
-	}
 	
 }
 
