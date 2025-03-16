@@ -5,6 +5,7 @@
 
 #include "Components/Button.h"
 #include "MultiplayerRacingCar/Multiplayer/Subsystem/MultiplayerSessionsSubsystem.h"
+#include "OnlineSessionSettings.h"
 
 void UStartMenu::StartMenu()
 {
@@ -59,7 +60,7 @@ void UStartMenu::StartGameClicked()
 void UStartMenu::JoinGameClicked()
 {
 	if (SessionsSubsystem)
-		SessionsSubsystem->JoinSession();
+		SessionsSubsystem->FindSessions();
 }
 
 void UStartMenu::RemoveMenu()
@@ -91,7 +92,19 @@ void UStartMenu::OnMultiplayerCreateSession(bool bWasSuccessful)
 void UStartMenu::OnMultiplayerFindSessionsComplete(const TArray<FOnlineSessionSearchResult>& SearchResults,
 	bool bWasSuccessful)
 {
-	
+	if (!SessionsSubsystem) return;
+	if (bWasSuccessful)
+	{
+		for (auto Result : SearchResults)
+		{
+			FString MatchType;
+			Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
+			if (MatchType == FString("ProMultiplayerGame"))
+			{
+				SessionsSubsystem->JoinSession(Result);
+			}
+		}
+	}
 }
 
 void UStartMenu::OnMultiplayerJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result)

@@ -96,19 +96,14 @@ void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 {
 	if (!SessionInterface.IsValid()) return;
 	SessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegateHandle);
-	
-	if (bWasSuccessful)
+
+	if (SessionSearchSettings->SearchResults.Num() <= 0 )
 	{
-		for (auto Result : SessionSearchSettings->SearchResults)
-		{
-			FString MatchType;
-			Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
-			if (MatchType == FString("ProMultiplayerGame"))
-			{
-				JoinSession(Result);
-			}
-		}
+		MultiplayerFindSessionsCompleteDelegate.Broadcast(TArray<FOnlineSessionSearchResult>(),bWasSuccessful);
+		return;
 	}
+	MultiplayerFindSessionsCompleteDelegate.Broadcast(SessionSearchSettings->SearchResults, bWasSuccessful);
+	
 }
 
 void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
