@@ -28,9 +28,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Multiplayer")
 	void CreateSession();
-
-	UFUNCTION(BlueprintCallable, Category = "Multiplayer")
-	void JoinSession();
+	void FindSessions();
+	void JoinSession(const FOnlineSessionSearchResult& SessionSearchResult);
 
 	/// Our Delegate
 	FMultiplayerCreateSessionCompleteDelegate MultiplayerCreateSessionCompleteDelegate;

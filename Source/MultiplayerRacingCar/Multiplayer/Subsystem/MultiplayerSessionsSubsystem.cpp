@@ -51,7 +51,7 @@ void UMultiplayerSessionsSubsystem::CreateSession()
 	}
 }
 
-void UMultiplayerSessionsSubsystem::JoinSession()
+void UMultiplayerSessionsSubsystem::FindSessions()
 {
 	if (!SessionInterface.IsValid()) return;
 
@@ -66,6 +66,19 @@ void UMultiplayerSessionsSubsystem::JoinSession()
 	if (!SessionInterface->FindSessions(*LocalPlayer->GetPreferredUniqueNetId(), SessionSearchSettings.ToSharedRef()))
 	{
 		SessionInterface->ClearOnFindSessionsCompleteDelegate_Handle(OnFindSessionsCompleteDelegateHandle);
+	}
+}
+
+void UMultiplayerSessionsSubsystem::JoinSession(const FOnlineSessionSearchResult& SessionSearchResult)
+{
+	FOnlineSessionSearchResult Result = SessionSearchResult;
+	Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
+	Result.Session.SessionSettings.bUsesPresence = true;
+	OnJoinSessionCompleteDelegateHandle = SessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
+	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
+	if (!SessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result))
+	{
+		SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
 	}
 }
 
@@ -92,14 +105,7 @@ void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 			Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
 			if (MatchType == FString("ProMultiplayerGame"))
 			{
-				Result.Session.SessionSettings.bUseLobbiesIfAvailable = true;
-				Result.Session.SessionSettings.bUsesPresence = true;
-				OnJoinSessionCompleteDelegateHandle = SessionInterface->AddOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegate);
-				const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
-				if (!SessionInterface->JoinSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, Result))
-				{
-					SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
-				}
+				JoinSession(Result);
 			}
 		}
 	}
