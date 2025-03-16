@@ -54,13 +54,25 @@ bool UStartMenu::Initialize()
 void UStartMenu::StartGameClicked()
 {
 	if (SessionsSubsystem)
+	{
 		SessionsSubsystem->CreateSession();
+		if (StartGame)
+		{
+			StartGame->SetIsEnabled(false);
+		}
+	}
 }
 
 void UStartMenu::JoinGameClicked()
 {
 	if (SessionsSubsystem)
+	{
 		SessionsSubsystem->FindSessions();
+		if (JoinGame)
+		{
+			JoinGame->SetIsEnabled(false);
+		}
+	}
 }
 
 void UStartMenu::RemoveMenu()
@@ -79,6 +91,10 @@ void UStartMenu::RemoveMenu()
 
 void UStartMenu::OnMultiplayerCreateSession(bool bWasSuccessful)
 {
+	if (StartGame)
+	{
+		StartGame->SetIsEnabled(true);
+	}
 	if (bWasSuccessful)
 	{
 		if (UWorld* World = GetWorld())
@@ -102,13 +118,22 @@ void UStartMenu::OnMultiplayerFindSessionsComplete(const TArray<FOnlineSessionSe
 			if (MatchType == FString("ProMultiplayerGame"))
 			{
 				SessionsSubsystem->JoinSession(Result);
+				return;
 			}
 		}
+	}
+	if (JoinGame)
+	{
+		JoinGame->SetIsEnabled(true);
 	}
 }
 
 void UStartMenu::OnMultiplayerJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result)
 {
+	if (JoinGame)
+	{
+		JoinGame->SetIsEnabled(true);
+	}
 	if (IOnlineSubsystem* OnlineSubsystemPtr = IOnlineSubsystem::Get())
 	{
 		if (IOnlineSessionPtr SessionInterface = OnlineSubsystemPtr->GetSessionInterface())
