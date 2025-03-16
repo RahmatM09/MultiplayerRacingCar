@@ -109,5 +109,18 @@ void UStartMenu::OnMultiplayerFindSessionsComplete(const TArray<FOnlineSessionSe
 
 void UStartMenu::OnMultiplayerJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result)
 {
+	if (IOnlineSubsystem* OnlineSubsystemPtr = IOnlineSubsystem::Get())
+	{
+		if (IOnlineSessionPtr SessionInterface = OnlineSubsystemPtr->GetSessionInterface())
+		{
+			FString MatchAddress;
+			SessionInterface->GetResolvedConnectString(NAME_GameSession, MatchAddress);
 	
+			if (APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController())
+			{
+				RemoveMenu();
+				PlayerController->ClientTravel(MatchAddress, ETravelType::TRAVEL_Absolute);
+			}
+		}
+	}
 }

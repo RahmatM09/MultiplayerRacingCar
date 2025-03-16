@@ -108,20 +108,8 @@ void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
 
 void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOnJoinSessionCompleteResult::Type Result)
 {
-	if (!SessionInterface.IsValid()) return;
+	if (SessionInterface.IsValid())
+		SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
 
-	SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
-	
-	FString MatchAddress;
-	SessionInterface->GetResolvedConnectString(NAME_GameSession, MatchAddress);
-
-	if (GEngine)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Green, FString::Printf(TEXT("Match Address: %s"), *MatchAddress));
-	}
-	
-	if (APlayerController* PlayerController = GetGameInstance()->GetFirstLocalPlayerController())
-	{
-		PlayerController->ClientTravel(MatchAddress, ETravelType::TRAVEL_Absolute);
-	}
+	MultiplayerJoinSessionCompleteDelegate.Broadcast(Result);
 }
