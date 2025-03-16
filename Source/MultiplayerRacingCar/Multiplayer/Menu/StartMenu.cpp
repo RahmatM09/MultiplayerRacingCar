@@ -30,6 +30,8 @@ void UStartMenu::StartMenu()
 		if (SessionsSubsystem)
 		{
 			SessionsSubsystem->MultiplayerCreateSessionCompleteDelegate.AddDynamic(this, &UStartMenu::OnMultiplayerCreateSession);
+			SessionsSubsystem->MultiplayerFindSessionsCompleteDelegate.AddUObject(this, &UStartMenu::OnMultiplayerFindSessionsComplete);
+			SessionsSubsystem->MultiplayerJoinSessionCompleteDelegate.AddUObject(this, &UStartMenu::OnMultiplayerJoinSessionComplete);
 		}
 	}
 	
@@ -84,4 +86,15 @@ void UStartMenu::OnMultiplayerCreateSession(bool bWasSuccessful)
 			RemoveMenu();
 		}
 	}
+}
+
+void UStartMenu::OnMultiplayerFindSessionsComplete(const TArray<FOnlineSessionSearchResult>& SearchResults,
+	bool bWasSuccessful)
+{
+	
+}
+
+void UStartMenu::OnMultiplayerJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result)
+{
+	
 }

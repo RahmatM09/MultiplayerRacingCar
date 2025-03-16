@@ -12,6 +12,8 @@ class IOnlineSubsystem;
 
 /// Our Delegates
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMultiplayerCreateSessionCompleteDelegate, bool, bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_TwoParams(FMultiplayerFindSessionsCompleteDelegate, const TArray<FOnlineSessionSearchResult>& SessionResults, bool bWasSuccessful);
+DECLARE_MULTICAST_DELEGATE_OneParam(FMultiplayerJoinSessionCompleteDelegate, EOnJoinSessionCompleteResult::Type Result);
 
 /**
  * 
@@ -32,6 +34,8 @@ public:
 
 	/// Our Delegate
 	FMultiplayerCreateSessionCompleteDelegate MultiplayerCreateSessionCompleteDelegate;
+	FMultiplayerFindSessionsCompleteDelegate MultiplayerFindSessionsCompleteDelegate;
+	FMultiplayerJoinSessionCompleteDelegate MultiplayerJoinSessionCompleteDelegate;
 
 protected:
 	/// Delegate Callback functions

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Interfaces/OnlineSessionInterface.h"
 #include "StartMenu.generated.h"
 
 /// forward declare
@@ -47,5 +48,7 @@ private:
 	/// Delegate Callback functions
 	UFUNCTION()
 	void OnMultiplayerCreateSession(bool bWasSuccessful);
+	void OnMultiplayerFindSessionsComplete(const TArray<FOnlineSessionSearchResult>& SearchResults, bool bWasSuccessful);
+	void OnMultiplayerJoinSessionComplete(EOnJoinSessionCompleteResult::Type Result);
 	
 };
