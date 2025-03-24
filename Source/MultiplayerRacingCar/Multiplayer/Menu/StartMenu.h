@@ -7,6 +7,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "StartMenu.generated.h"
 
+class UComboBoxString;
 /// forward declare
 class UButton;
 class UMultiplayerSessionsSubsystem;
@@ -31,6 +32,11 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> JoinGame;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UComboBoxString> NumberOfPlayers;
+
+	FString MatchTypeName {TEXT("ProMultiplayerGame")};
 
 	FString MapLocation = {TEXT("/Game/Maps/Lobby?listen")};
 

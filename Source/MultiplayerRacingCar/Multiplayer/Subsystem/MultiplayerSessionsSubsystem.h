@@ -27,7 +27,7 @@ public:
 	UMultiplayerSessionsSubsystem();
 
 	UFUNCTION(BlueprintCallable, Category = "Multiplayer")
-	void CreateSession();
+	void CreateSession(int32 NumPlayers, FString MatchType);
 	void FindSessions();
 	void JoinSession(const FOnlineSessionSearchResult& SessionSearchResult);
 

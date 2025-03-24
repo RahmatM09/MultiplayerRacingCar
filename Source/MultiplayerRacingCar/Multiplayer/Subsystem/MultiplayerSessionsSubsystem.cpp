@@ -25,7 +25,7 @@ UMultiplayerSessionsSubsystem::UMultiplayerSessionsSubsystem():
 	}
 }
 
-void UMultiplayerSessionsSubsystem::CreateSession()
+void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPlayers, FString MatchType)
 {
 	if (!SessionInterface.IsValid())
 	{
@@ -40,13 +40,13 @@ void UMultiplayerSessionsSubsystem::CreateSession()
 	
 	TSharedPtr<FOnlineSessionSettings> SessionSettings = MakeShareable(new FOnlineSessionSettings());
 	SessionSettings->bIsLANMatch = false;
-	SessionSettings->NumPublicConnections = 10;
+	SessionSettings->NumPublicConnections = NumPlayers;
 	SessionSettings->bShouldAdvertise = true;
 	SessionSettings->bAllowJoinInProgress = true;
 	SessionSettings->bAllowJoinViaPresence = true;
 	SessionSettings->bUsesPresence = true;
 	SessionSettings->bUseLobbiesIfAvailable = true;
-	SessionSettings->Set(FName("MatchType"), FString("ProMultiplayerGame"), EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	SessionSettings->Set(FName("MatchType"), MatchType, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	if (!SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *SessionSettings))
 	{

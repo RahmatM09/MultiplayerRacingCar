@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "MultiplayerRacingCar/Multiplayer/Subsystem/MultiplayerSessionsSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "Components/ComboBoxString.h"
 
 void UStartMenu::StartMenu()
 {
@@ -55,7 +56,8 @@ void UStartMenu::StartGameClicked()
 {
 	if (SessionsSubsystem)
 	{
-		SessionsSubsystem->CreateSession();
+		int32 NumbPlayers = FCString::Atoi(*NumberOfPlayers->GetSelectedOption());
+		SessionsSubsystem->CreateSession(NumbPlayers, MatchTypeName);
 		if (StartGame)
 		{
 			StartGame->SetIsEnabled(false);
