@@ -7,6 +7,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "StartMenu.generated.h"
 
+class UEditableTextBox;
 class UCheckBox;
 class UComboBoxString;
 /// forward declare
@@ -40,6 +41,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UCheckBox> bCustomSessionID;
 
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UEditableTextBox> NewSessionID;
+
 	FString MatchTypeName {TEXT("ProMultiplayerGame")};
 
 	FString MapLocation = {TEXT("/Game/Maps/Lobby?listen")};
@@ -49,6 +53,9 @@ private:
 
 	UFUNCTION()
 	void StartGameClicked();
+
+	UFUNCTION()
+	void OnCustomSessionClicked(bool bIsChecked);
 
 	UFUNCTION()
 	void JoinGameClicked();

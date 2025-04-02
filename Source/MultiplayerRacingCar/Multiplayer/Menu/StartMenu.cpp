@@ -8,6 +8,7 @@
 #include "OnlineSessionSettings.h"
 #include "Components/CheckBox.h"
 #include "Components/ComboBoxString.h"
+#include "Components/EditableTextBox.h"
 
 void UStartMenu::StartMenu()
 {
@@ -49,6 +50,8 @@ bool UStartMenu::Initialize()
 		StartGame->OnClicked.AddDynamic(this, &UStartMenu::StartGameClicked);
 	if (JoinGame)
 		JoinGame->OnClicked.AddDynamic(this, &UStartMenu::JoinGameClicked);
+	if (bCustomSessionID)
+		bCustomSessionID->OnCheckStateChanged.AddDynamic(this, &UStartMenu::OnCustomSessionClicked);
 
 	return true;
 }
@@ -64,6 +67,11 @@ void UStartMenu::StartGameClicked()
 			StartGame->SetIsEnabled(false);
 		}
 	}
+}
+
+void UStartMenu::OnCustomSessionClicked(bool bIsChecked)
+{
+	NewSessionID->SetIsReadOnly(!bIsChecked);
 }
 
 void UStartMenu::JoinGameClicked()
@@ -120,7 +128,11 @@ void UStartMenu::OnMultiplayerFindSessionsComplete(const TArray<FOnlineSessionSe
 			Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
 			if (bCustomSessionID->IsChecked())
 			{
-				
+				if (MatchType == NewSessionID->GetText().ToString())
+				{
+					SessionsSubsystem->JoinSession(Result);
+					return;
+				}
 			}
 			else
 			{
