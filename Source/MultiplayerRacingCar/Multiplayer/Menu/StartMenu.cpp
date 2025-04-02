@@ -6,6 +6,7 @@
 #include "Components/Button.h"
 #include "MultiplayerRacingCar/Multiplayer/Subsystem/MultiplayerSessionsSubsystem.h"
 #include "OnlineSessionSettings.h"
+#include "Components/CheckBox.h"
 #include "Components/ComboBoxString.h"
 
 void UStartMenu::StartMenu()
@@ -117,10 +118,17 @@ void UStartMenu::OnMultiplayerFindSessionsComplete(const TArray<FOnlineSessionSe
 		{
 			FString MatchType;
 			Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
-			if (MatchType == FString("ProMultiplayerGame"))
+			if (bCustomSessionID->IsChecked())
 			{
-				SessionsSubsystem->JoinSession(Result);
-				return;
+				
+			}
+			else
+			{
+				if (MatchType.StartsWith(FString("ProMultiplayerGame"), ESearchCase::CaseSensitive))
+				{
+					SessionsSubsystem->JoinSession(Result);
+					return;
+				}
 			}
 		}
 	}

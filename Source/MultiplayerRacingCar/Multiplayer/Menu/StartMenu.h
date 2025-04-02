@@ -7,6 +7,7 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "StartMenu.generated.h"
 
+class UCheckBox;
 class UComboBoxString;
 /// forward declare
 class UButton;
@@ -35,6 +36,9 @@ private:
 
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UComboBoxString> NumberOfPlayers;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UCheckBox> bCustomSessionID;
 
 	FString MatchTypeName {TEXT("ProMultiplayerGame")};
 
