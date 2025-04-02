@@ -47,6 +47,7 @@ private:
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<FOnlineSessionSearch> SessionSearchSettings;
+	FString CurrentSessionUniqueName{FString()};
 
 	/// Multiplayer Delegates
 	FOnCreateSessionCompleteDelegate OnCreateSessionCompleteDelegate;
@@ -55,5 +56,8 @@ private:
 	FDelegateHandle OnFindSessionsCompleteDelegateHandle;
 	FOnJoinSessionCompleteDelegate OnJoinSessionCompleteDelegate;
 	FDelegateHandle OnJoinSessionCompleteDelegateHandle;
+
+	/// Generate Custom Session ID
+	FString GenerateUniqueSessionId() const;
 	
 };

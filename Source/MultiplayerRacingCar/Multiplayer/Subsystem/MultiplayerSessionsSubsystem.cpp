@@ -6,6 +6,7 @@
 #include "OnlineSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "Online/OnlineSessionNames.h"
+#include "Interfaces/OnlineIdentityInterface.h"
 
 
 UMultiplayerSessionsSubsystem::UMultiplayerSessionsSubsystem():
@@ -27,6 +28,7 @@ UMultiplayerSessionsSubsystem::UMultiplayerSessionsSubsystem():
 
 void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPlayers, FString MatchType)
 {
+	CurrentSessionUniqueName = MatchType + GenerateUniqueSessionId();
 	if (!SessionInterface.IsValid())
 	{
 		MultiplayerCreateSessionCompleteDelegate.Broadcast(false);
@@ -46,7 +48,7 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPlayers, FString Matc
 	SessionSettings->bAllowJoinViaPresence = true;
 	SessionSettings->bUsesPresence = true;
 	SessionSettings->bUseLobbiesIfAvailable = true;
-	SessionSettings->Set(FName("MatchType"), MatchType, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	SessionSettings->Set(FName("MatchType"), CurrentSessionUniqueName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	if (!SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *SessionSettings))
 	{
@@ -100,6 +102,9 @@ void UMultiplayerSessionsSubsystem::OnCreateSessionComplete(FName SessionName, b
 	}
 	MultiplayerCreateSessionCompleteDelegate.Broadcast(bWasSuccessful);
 	
+	if (GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 50.f, FColor::Green, FString::Printf(TEXT("Session Name: %s"), *CurrentSessionUniqueName));
+	
 }
 
 void UMultiplayerSessionsSubsystem::OnFindSessionsComplete(bool bWasSuccessful)
@@ -127,4 +132,27 @@ void UMultiplayerSessionsSubsystem::OnJoinSessionComplete(FName SessionName, EOn
 		SessionInterface->ClearOnJoinSessionCompleteDelegate_Handle(OnJoinSessionCompleteDelegateHandle);
 	}
 	MultiplayerJoinSessionCompleteDelegate.Broadcast(Result);
+}
+
+FString UMultiplayerSessionsSubsystem::GenerateUniqueSessionId() const
+{
+    
+    /// Player Name + _ + Time Now
+    FString PlayerSteamName = FString("");
+	
+    if(IOnlineSubsystem* OnlineSubsystemSteam = IOnlineSubsystem::Get(STEAM_SUBSYSTEM))
+    {
+        IOnlineIdentityPtr Identity = OnlineSubsystemSteam->GetIdentityInterface();
+    	if (Identity.IsValid())
+    	{
+    		const FUniqueNetIdPtr LocalPlayerID = Identity->GetUniquePlayerId(0);
+    		if (LocalPlayerID.IsValid())
+    			PlayerSteamName = Identity->GetPlayerNickname(*LocalPlayerID);
+    	}
+    }
+
+	int64 Timestamp = FDateTime::Now().ToUnixTimestamp();
+	FString TimestampString = FString::Printf(TEXT("%04d"), Timestamp % 10000);
+	
+	return PlayerSteamName + TEXT("_") + TimestampString;
 }
