@@ -47,6 +47,8 @@ private:
 	IOnlineSubsystem* OnlineSubsystem;
 	IOnlineSessionPtr SessionInterface;
 	TSharedPtr<FOnlineSessionSearch> SessionSearchSettings;
+
+	UPROPERTY(BlueprintReadOnly, Category = "MultiplayerSessionsSubsystem", meta = (AllowPrivateAccess = "true"))
 	FString CurrentSessionUniqueName{FString()};
 
 	/// Multiplayer Delegates
