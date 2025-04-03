@@ -128,7 +128,7 @@ void UStartMenu::OnMultiplayerFindSessionsComplete(const TArray<FOnlineSessionSe
 			Result.Session.SessionSettings.Get(FName("MatchType"), MatchType);
 			if (bCustomSessionID->IsChecked())
 			{
-				if (MatchType == NewSessionID->GetText().ToString())
+				if (MatchType == (MatchTypeName + NewSessionID->GetText().ToString()))
 				{
 					SessionsSubsystem->JoinSession(Result);
 					return;

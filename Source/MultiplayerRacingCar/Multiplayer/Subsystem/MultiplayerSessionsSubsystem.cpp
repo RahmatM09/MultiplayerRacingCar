@@ -49,6 +49,9 @@ void UMultiplayerSessionsSubsystem::CreateSession(int32 NumPlayers, FString Matc
 	SessionSettings->bUsesPresence = true;
 	SessionSettings->bUseLobbiesIfAvailable = true;
 	SessionSettings->Set(FName("MatchType"), CurrentSessionUniqueName, EOnlineDataAdvertisementType::ViaOnlineServiceAndPing);
+	
+	CurrentSessionUniqueName.RemoveFromStart(MatchType);
+	
 	const ULocalPlayer* LocalPlayer = GetWorld()->GetFirstLocalPlayerFromController();
 	if (!SessionInterface->CreateSession(*LocalPlayer->GetPreferredUniqueNetId(), NAME_GameSession, *SessionSettings))
 	{
