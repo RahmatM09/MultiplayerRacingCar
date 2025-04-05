@@ -42,6 +42,25 @@ void ARacingVehicle::BeginPlay()
 void ARacingVehicle::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UpdateSound(DeltaTime);
+}
+
+
+void ARacingVehicle::UpdateSound(float DeltaTime)
+{
+	if (!EngineAudioComponent || !AccelerateAudioComponent || !IdleAudioComponent) return;
+
+	float CurrentSpeed = GetVelocity().Size() * 0.0223694f;
+
+	float TargetIdleSoundVolume = (CurrentSpeed < 10.f) ? 1.f : 0.f;
+	float TargetEngineSoundVolume = (CurrentSpeed >= 10.f) ? 1.f : 0.f;
+
+	float IdleValume = FMath::FInterpTo(IdleAudioComponent->VolumeMultiplier, TargetIdleSoundVolume, DeltaTime, 3.f);
+	float EngineVolume = FMath::FInterpTo(EngineAudioComponent->VolumeMultiplier, TargetEngineSoundVolume, DeltaTime, 3.f);
+	
+	IdleAudioComponent->SetVolumeMultiplier(IdleValume);
+	EngineAudioComponent->SetVolumeMultiplier(EngineVolume);
+	
 }
 
 void ARacingVehicle::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -55,5 +55,8 @@ private:
 
 	UFUNCTION(Server, reliable)
 	void Server_RequestPlaySounds();
+
+	void UpdateSound(float DeltaTime);
 	
 };
+
