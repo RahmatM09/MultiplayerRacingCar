@@ -60,6 +60,10 @@ void ARacingVehicle::UpdateSound(float DeltaTime)
 	
 	IdleAudioComponent->SetVolumeMultiplier(IdleValume);
 	EngineAudioComponent->SetVolumeMultiplier(EngineVolume);
+
+	float TargetAccelerateSoundVolume = bIsAccelerating ? 1.5f : 0.f;
+	float AccelerateValume = FMath::FInterpTo(AccelerateAudioComponent->VolumeMultiplier, TargetAccelerateSoundVolume, DeltaTime, 3.f);
+	AccelerateAudioComponent->SetVolumeMultiplier(AccelerateValume);
 	
 }
 

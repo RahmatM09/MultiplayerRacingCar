@@ -49,6 +49,9 @@ private:
 	UPROPERTY(Replicated, EditAnywhere, Category = "Audio")
 	TObjectPtr<USoundBase> EngineSound;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Audio", meta = (AllowPrivateAccess = "true"))
+	bool bIsAccelerating {false};
+
 	// Audio Functions
 	UFUNCTION(NetMulticast, reliable)
 	void Multicast_PlaySounds();
