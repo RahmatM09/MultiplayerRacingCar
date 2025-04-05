@@ -4,6 +4,7 @@
 #include "WinTrigger.h"
 
 #include "Components/BoxComponent.h"
+#include "MultiplayerRacingCar/Vehicle/RacingVehicle.h"
 
 AWinTrigger::AWinTrigger()
 {
@@ -30,7 +31,10 @@ void AWinTrigger::BeginPlay()
 void AWinTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
+	if (ARacingVehicle* Vehicle = Cast<ARacingVehicle>(OtherActor))
+	{
+		
+	}
 }
 
 void AWinTrigger::Tick(float DeltaTime)
