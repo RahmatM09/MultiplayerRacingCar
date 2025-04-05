@@ -7,6 +7,7 @@
 #include "WinTrigger.generated.h"
 
 class UBoxComponent;
+class ARacingVehicle;
 
 UCLASS()
 class MULTIPLAYERRACINGCAR_API AWinTrigger : public AActor
@@ -25,6 +26,15 @@ private:
 	// Components
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UBoxComponent> TriggerBox;
+
+	TObjectPtr<ARacingVehicle> WinnerVehicle;
+
+	// Handling winner
+	UFUNCTION(Server, Reliable)
+	void Server_HandleWinner(ARacingVehicle* Winner);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void Net_Multicast_HandleWinner(ARacingVehicle* Winner);
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
