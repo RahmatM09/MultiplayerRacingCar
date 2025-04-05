@@ -48,5 +48,12 @@ private:
 
 	UPROPERTY(Replicated, EditAnywhere, Category = "Audio")
 	TObjectPtr<USoundBase> EngineSound;
+
+	// Audio Functions
+	UFUNCTION(NetMulticast, reliable)
+	void Multicast_PlaySounds();
+
+	UFUNCTION(Server, reliable)
+	void Server_RequestPlaySounds();
 	
 };

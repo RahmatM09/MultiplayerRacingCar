@@ -28,6 +28,15 @@ ARacingVehicle::ARacingVehicle()
 void ARacingVehicle::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if (HasAuthority())
+	{
+		Multicast_PlaySounds();
+	}
+	else
+	{
+		Server_RequestPlaySounds();
+	}
 }
 
 void ARacingVehicle::Tick(float DeltaTime)
@@ -41,4 +50,31 @@ void ARacingVehicle::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 	DOREPLIFETIME(ARacingVehicle, IdleSound);
 	DOREPLIFETIME(ARacingVehicle, AccelerateSound);
 	DOREPLIFETIME(ARacingVehicle, EngineSound);
+}
+
+void ARacingVehicle::Server_RequestPlaySounds_Implementation()
+{
+	Multicast_PlaySounds();
+}
+
+void ARacingVehicle::Multicast_PlaySounds_Implementation()
+{
+	if (IdleSound)
+	{
+		IdleAudioComponent->SetSound(IdleSound);
+		IdleAudioComponent->Play();
+		IdleAudioComponent->SetVolumeMultiplier(1.f);
+	}
+	if (AccelerateSound)
+	{
+		AccelerateAudioComponent->SetSound(AccelerateSound);
+		AccelerateAudioComponent->Play();
+		AccelerateAudioComponent->SetVolumeMultiplier(0.f);
+	}
+	if (EngineSound)
+	{
+		EngineAudioComponent->SetSound(EngineSound);
+		EngineAudioComponent->Play();
+		EngineAudioComponent->SetVolumeMultiplier(0.f);
+	}
 }
