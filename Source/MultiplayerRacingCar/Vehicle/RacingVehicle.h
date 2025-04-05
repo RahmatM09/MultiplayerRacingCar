@@ -59,6 +59,9 @@ private:
 	UFUNCTION(Server, reliable)
 	void Server_RequestPlaySounds();
 
+	UFUNCTION(NetMulticast, reliable)
+	void Multicast_UpdateAllClients();
+
 	void UpdateSound(float DeltaTime);
 	
 };

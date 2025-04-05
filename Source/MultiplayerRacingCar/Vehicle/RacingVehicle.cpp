@@ -2,6 +2,8 @@
 
 
 #include "RacingVehicle.h"
+
+#include "EngineUtils.h"
 #include "Components/AudioComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -77,7 +79,7 @@ void ARacingVehicle::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLi
 
 void ARacingVehicle::Server_RequestPlaySounds_Implementation()
 {
-	Multicast_PlaySounds();
+	Multicast_UpdateAllClients();
 }
 
 void ARacingVehicle::Multicast_PlaySounds_Implementation()
@@ -99,5 +101,17 @@ void ARacingVehicle::Multicast_PlaySounds_Implementation()
 		EngineAudioComponent->SetSound(EngineSound);
 		EngineAudioComponent->Play();
 		EngineAudioComponent->SetVolumeMultiplier(0.f);
+	}
+}
+
+void ARacingVehicle::Multicast_UpdateAllClients_Implementation()
+{
+	for (TActorIterator<ARacingVehicle> IT(GetWorld()); IT; ++IT)
+	{
+		ARacingVehicle* Vehicle = *IT;
+		if (Vehicle)
+		{
+			Vehicle->Multicast_PlaySounds();
+		}
 	}
 }
